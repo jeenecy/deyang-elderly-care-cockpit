@@ -26,5 +26,9 @@ Thumbs.db
 # ===== 本地数据快照（按需）=====
 *.tmp
 
+# ===== Release 附件（仅本地挂 GitHub Release，不进仓库）=====
+dist-v1.0.0.zip
+dist-*.zip
+
 # ===== 内部工作记忆（不对外发布）=====
 .workbuddy/
