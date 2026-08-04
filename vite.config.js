@@ -14,5 +14,5 @@ export default defineConfig({
       }
     }
   },
-  build: { emptyOutDir: false }
+  build: { emptyOutDir: true }
 })
