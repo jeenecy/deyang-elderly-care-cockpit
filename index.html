@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>德阳市智慧养老数字驾驶舱</title>
+
+    <!-- Three.js r160（最后一个官方 UMD 构建，暴露全局 THREE） -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <!-- CDN 不可达时自动回落到本地 vendor 副本，保证离线/内网可用 -->
+    <script>
+      if (!window.THREE) {
+        document.write('<script src="/vendor/three.min.js"><\/script>')
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
