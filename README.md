@@ -12,13 +12,13 @@
 
 ### 驾驶舱大屏（免登录）
 - 2D / 3D 双模式德阳地图，政府/机构/社区/居家/医疗/关怀对象等多类点位可视化
-- <img width="2880" height="1547" alt="image" src="https://github.com/user-attachments/assets/dc35ef56-d892-4b6f-9e5c-4cc54bfa399a" />
+<img width="2880" height="1547" alt="image" src="https://github.com/user-attachments/assets/dc35ef56-d892-4b6f-9e5c-4cc54bfa399a" />
 <img width="2880" height="1547" alt="image" src="https://github.com/user-attachments/assets/28a0734f-09eb-437e-bb88-669e74e561f7" />
 - 顶部板块切换：**政府监管 · 机构养老 · 社区养老 · 居家养老 · 医疗健康 · 关怀对象**
-- <img width="1278" height="128" alt="image" src="https://github.com/user-attachments/assets/43c22979-88b2-4191-a72f-326fa7e0a150" />
+<img width="1278" height="128" alt="image" src="https://github.com/user-attachments/assets/43c22979-88b2-4191-a72f-326fa7e0a150" />
 
 - 每个板块含 KPI 指标卡 + 多维度图表（分布、构成、TOP 排行、预警率等）
-- <img width="2880" height="1547" alt="image" src="https://github.com/user-attachments/assets/34f1fc96-c226-4c09-bb52-d6533bc454d2" />
+<img width="2880" height="1547" alt="image" src="https://github.com/user-attachments/assets/34f1fc96-c226-4c09-bb52-d6533bc454d2" />
 
 - 点击地图点位弹出详情卡；实时告警、后台自定义标注点
 <img width="1386" height="1158" alt="image" src="https://github.com/user-attachments/assets/db0d820a-37ee-43e9-9038-44de70e33d4b" />
