@@ -30,5 +30,9 @@ Thumbs.db
 dist-v1.0.0.zip
 dist-*.zip
 
+# ===== Markdown 文档（README 除外，不进仓库）=====
+*.md
+!README.md
+
 # ===== 内部工作记忆（不对外发布）=====
 .workbuddy/
