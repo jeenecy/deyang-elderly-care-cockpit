@@ -459,7 +459,7 @@ export class Map3DEngine {
         if (big && big.outer.length >= 4) polys.push({ outer: big.outer.map(toWorld), holes: [] })
       }
       const ratio = (d.stats.elderly || 1) / maxE
-      const height = 8 + ratio * 26         // 数据驱动起伏 8 ~ 34
+      const height = 10                        // 统一基准高度：所有板块共面，仅悬停时由 liftTarget 微抬升(+5.5)
       const c = (regionCenter && regionCenter[d.name]) || null
       const centroid = c ? toWorld(c) : avgRing(d.polys[0].outer.map(toWorld))
       return { name: d.name, stats: d.stats, polys, centroid, height, ratio, idx }

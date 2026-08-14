@@ -2,6 +2,18 @@ import { defineStore } from 'pinia'
 import { reactive, computed, ref } from 'vue'
 import { api } from '../api/client.js'
 import { useToast } from '../composables/useToast.js'
+import { nextRunFromCron } from '../utils/cron.js'
+import {
+  DISTRICTS, INSTITUTION_TYPES, OPERATION_STATUS, CARE_LEVEL,
+  FACILITY_TYPES, FACILITY_STATUS, SERVICE_TYPES, ORDER_STATUS,
+  ROLE_NAMES, DATA_SCOPE, CONTENT_CATEGORIES, CONTENT_STATUS,
+  SOURCE_TYPES, SYNC_STATUS, SYNC_INTERVAL,
+  DEVICE_TYPES, DEVICE_STATUS,
+  ALERT_LEVELS, ALERT_TYPES, ALERT_SOURCES, ALERT_STATES,
+  COMPARE_OPS, METRIC_UNITS, METRIC_TREND, NOTIFY_CHANNELS,
+  GENDER, LIVING_TYPES, ELDER_CARE_LEVEL, ELDER_STATUS,
+  EMERGENCY_RELATIONS, HEALTH_TAGS
+} from '../constants/dict.js'
 
 // 业务数据中心 —— 后台所有页面共享同一份可变数据，操作即时联动大屏与总览
 export const useDataStore = defineStore('data', () => {
@@ -233,7 +245,36 @@ export const useDataStore = defineStore('data', () => {
   ])
 
   // ===== 医疗机构（卫生专网签约机构，大屏独立图层）=====
-  const medical = reactive([])
+  // 默认种子：覆盖 6 区县，含公立/私立、各等级与主要类型，保证大屏「医疗机构」板块首次打开即有数据。
+  // 后端服务启动后，loadAll() 会用它替换为完整的 107 家联网数据。
+  const medical = reactive([
+    { id: 'MED001', code: 'MED001', name: '旌阳区人民医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '三级甲等', address: '旌阳区泰山北路一段', type: '综合医院', status: '正常接诊' },
+    { id: 'MED002', code: 'MED002', name: '德阳市中医医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '三级乙等', address: '旌阳区天山北路', type: '中医医院', status: '正常接诊' },
+    { id: 'MED003', code: 'MED003', name: '旌阳区妇幼保健院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '二级甲等', address: '旌阳区岷江西路', type: '妇幼保健院', status: '正常接诊' },
+    { id: 'MED004', code: 'MED004', name: '德阳华山眼科医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '私立', level: '待核实', address: '旌阳区长江东路', type: '其他专科', status: '正常接诊' },
+    { id: 'MED005', code: 'MED005', name: '罗江区人民医院', srcDistrict: '罗江区', district: '罗江区', nature: '公立', level: '二级甲等', address: '罗江区万安南路', type: '综合医院', status: '正常接诊' },
+    { id: 'MED006', code: 'MED006', name: '罗江区万安镇卫生院', srcDistrict: '罗江区', district: '罗江区', nature: '公立', level: '未定级（基层）', address: '罗江区万安镇', type: '乡镇卫生院', status: '正常接诊' },
+    { id: 'MED007', code: 'MED007', name: '罗江博爱康复医院', srcDistrict: '罗江区', district: '罗江区', nature: '私立', level: '待核实', address: '罗江区纹江路', type: '护理机构', status: '正常接诊' },
+    { id: 'MED008', code: 'MED008', name: '中江县人民医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '三级甲等', address: '中江县凯江镇大北街', type: '综合医院', status: '正常接诊' },
+    { id: 'MED009', code: 'MED009', name: '中江县中医医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '三级乙等', address: '中江县一环路北段', type: '中医医院', status: '正常接诊' },
+    { id: 'MED010', code: 'MED010', name: '中江县妇幼保健院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '二级甲等', address: '中江县城区一环路东段', type: '妇幼保健院', status: '正常接诊' },
+    { id: 'MED011', code: 'MED011', name: '中江县精神病医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '二级乙等', address: '中江县南华镇', type: '精神专科', status: '正常接诊' },
+    { id: 'MED012', code: 'MED012', name: '中江民瑞医院', srcDistrict: '中江县', district: '中江县', nature: '私立', level: '待核实', address: '中江县凯江镇', type: '综合医院', status: '正常接诊' },
+    { id: 'MED013', code: 'MED013', name: '广汉市人民医院', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '三级乙等', address: '广汉市汉口路', type: '综合医院', status: '正常接诊' },
+    { id: 'MED014', code: 'MED014', name: '广汉市妇幼保健院', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '二级甲等', address: '广汉市佛山路西段', type: '妇幼保健院', status: '正常接诊' },
+    { id: 'MED015', code: 'MED015', name: '广汉市雒城街道社区卫生服务中心', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '未定级（基层）', address: '广汉市雒城街道', type: '乡镇卫生院', status: '正常接诊' },
+    { id: 'MED016', code: 'MED016', name: '广汉骨科医院', srcDistrict: '广汉市', district: '广汉市', nature: '私立', level: '二级乙等', address: '广汉市西安路', type: '其他专科', status: '正常接诊' },
+    { id: 'MED017', code: 'MED017', name: '什邡市人民医院', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '二级甲等', address: '什邡市方亭镇', type: '综合医院', status: '正常接诊' },
+    { id: 'MED018', code: 'MED018', name: '什邡市妇幼保健院', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '二级乙等', address: '什邡市金河南路', type: '妇幼保健院', status: '正常接诊' },
+    { id: 'MED019', code: 'MED019', name: '什邡市方亭社区卫生服务中心', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '未定级（基层）', address: '什邡市方亭街道', type: '乡镇卫生院', status: '正常接诊' },
+    { id: 'MED020', code: 'MED020', name: '什邡爱尔眼科医院', srcDistrict: '什邡市', district: '什邡市', nature: '私立', level: '待核实', address: '什邡市蓥峰北路', type: '其他专科', status: '正常接诊' },
+    { id: 'MED021', code: 'MED021', name: '绵竹市人民医院', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '三级乙等', address: '绵竹市剑南镇', type: '综合医院', status: '正常接诊' },
+    { id: 'MED022', code: 'MED022', name: '绵竹市妇幼保健院', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '二级甲等', address: '绵竹市紫岩街道', type: '妇幼保健院', status: '正常接诊' },
+    { id: 'MED023', code: 'MED023', name: '绵竹市紫岩社区卫生服务中心', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '未定级（基层）', address: '绵竹市紫岩街道', type: '乡镇卫生院', status: '正常接诊' },
+    { id: 'MED024', code: 'MED024', name: '绵竹聚康医养护理院', srcDistrict: '绵竹市', district: '绵竹市', nature: '私立', level: '待核实', address: '绵竹市东北镇', type: '护理机构', status: '正常接诊' },
+    { id: 'MED025', code: 'MED025', name: '德阳市卫健委', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '—', address: '旌阳区长江东路', type: '卫生健康行政', status: '正常接诊' },
+    { id: 'MED026', code: 'MED026', name: '德阳市疾病预防控制中心', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '—', address: '旌阳区峨眉南路', type: '疾病预防控制', status: '正常接诊' }
+  ])
 
   // ===== 老人档案（G03 · 居家/社区/机构养老的关怀对象主数据）=====
   // 字段说明：name 姓名 | gender 性别 | age 年龄 | idNo 身份证号(可选)
@@ -251,6 +292,141 @@ export const useDataStore = defineStore('data', () => {
     { id: 'E007', code: 'E007', name: '周学文', gender: '男', age: 71, idNo: '51060419550814****', district: '罗江区', town: '万安镇', address: '万安镇学府花园4栋2单元', phone: '138****3340', livingType: '与子女同住', careLevel: '自理', status: '在档', belongOrg: '罗江区社会福利院', emergencyName: '周婷', emergencyPhone: '135****5560', emergencyRelation: '子女', healthTags: ['视听障碍'], registerDate: '2026-05-11' },
     { id: 'E008', code: 'E008', name: '孙玉梅', gender: '女', age: 83, idNo: '51062319431208****', district: '中江县', town: '凯江镇', address: '凯江镇康乐小区1栋', phone: '139****7781', livingType: '空巢', careLevel: '失能', status: '转院', belongOrg: '中江县第二敬老院', emergencyName: '孙磊', emergencyPhone: '137****1190', emergencyRelation: '子女', healthTags: ['高血压', '冠心病'], registerDate: '2026-02-09' }
   ])
+
+  // ===== G04 数据字典（受控词表集中治理 · 从 dict.js 生成种子）=====
+  // 设计依据：《G04_数据字典.md》§4 受控词表 + 卷一 §G04。
+  // dictTypes：字典类型（type 编码 / name 名称 / remark 说明 / colorized 是否着色）
+  // dictItems：字典项（type 关联 / code 值编码 / label 显示名 / sort 排序 / status 启停 / color 色标）
+  const COLOR_BY_LABEL = {
+    '紧急': '#ff4d4d', '严重': '#ffaa00', '一般': '#ffd400', '提示': '#3b82f6',
+    '自理': '#10b981', '半失能': '#ffaa00', '失能': '#ff4d4d', '特护': '#a855f7',
+    '在线': '#10b981', '离线': '#8aa6c8', '故障': '#ff4d4d',
+    '运营中': '#10b981', '整改中': '#ffaa00', '筹建中': '#3b82f6',
+    '在档': '#10b981', '离档': '#8aa6c8', '转院': '#ffaa00'
+  }
+  const DICT_SEED = [
+    { type: 'district', name: '区县', remark: '德阳市行政区划', color: false, items: DISTRICTS },
+    { type: 'institutionType', name: '机构类型', remark: '养老机构性质', items: INSTITUTION_TYPES },
+    { type: 'operationStatus', name: '运营状态', remark: '机构运营状态', color: true, items: OPERATION_STATUS },
+    { type: 'careLevel', name: '照护等级分布', remark: '机构照护构成', items: CARE_LEVEL },
+    { type: 'facilityType', name: '设施类型', remark: '社区养老设施', items: FACILITY_TYPES },
+    { type: 'facilityStatus', name: '设施状态', remark: '', items: FACILITY_STATUS },
+    { type: 'serviceType', name: '服务类型', remark: '居家养老服务项', items: SERVICE_TYPES },
+    { type: 'orderStatus', name: '工单状态', remark: '居家工单流转', items: ORDER_STATUS },
+    { type: 'roleName', name: '角色名', remark: 'RBAC 角色定义', items: ROLE_NAMES },
+    { type: 'dataScope', name: '数据范围', remark: '角色数据权限', items: DATA_SCOPE },
+    { type: 'contentCategory', name: '内容分类', remark: '内容运营分类', items: CONTENT_CATEGORIES },
+    { type: 'contentStatus', name: '内容状态', remark: '发布流转', items: CONTENT_STATUS },
+    { type: 'sourceType', name: '数据源类型', remark: '数据接入分类', items: SOURCE_TYPES },
+    { type: 'syncStatus', name: '同步状态', remark: '', items: SYNC_STATUS },
+    { type: 'syncInterval', name: '同步频率', remark: '', items: SYNC_INTERVAL },
+    { type: 'deviceType', name: '设备类型', remark: '物联设备分类', items: DEVICE_TYPES },
+    { type: 'deviceStatus', name: '设备状态', remark: '', color: true, items: DEVICE_STATUS },
+    { type: 'alertLevel', name: '告警等级', remark: '紧急/严重/一般/提示', color: true, items: ALERT_LEVELS },
+    { type: 'alertType', name: '告警类型', remark: '', items: ALERT_TYPES },
+    { type: 'alertSource', name: '告警来源', remark: '', items: ALERT_SOURCES },
+    { type: 'alertState', name: '告警处置状态', remark: '', items: ALERT_STATES },
+    { type: 'compareOp', name: '比较运算符', remark: '规则阈值比较', items: COMPARE_OPS },
+    { type: 'metricUnit', name: '指标单位', remark: '', items: METRIC_UNITS },
+    { type: 'metricTrend', name: '指标趋势', remark: '', items: METRIC_TREND },
+    { type: 'notifyChannel', name: '通知渠道', remark: '告警通知通道', items: NOTIFY_CHANNELS },
+    { type: 'gender', name: '性别', remark: '老人档案', items: GENDER },
+    { type: 'livingType', name: '居住类型', remark: '老人居住方式', items: LIVING_TYPES },
+    { type: 'elderCareLevel', name: '照护等级(老人)', remark: '失能等级', color: true, items: ELDER_CARE_LEVEL },
+    { type: 'elderStatus', name: '档案状态', remark: '', color: true, items: ELDER_STATUS },
+    { type: 'emergencyRelation', name: '与本人关系', remark: '紧急联系人', items: EMERGENCY_RELATIONS },
+    { type: 'healthTag', name: '健康标签', remark: '慢病/风险标签', items: HEALTH_TAGS }
+  ]
+  let dtSeq = 0, diSeq = 0
+  const dictTypes = reactive([])
+  const dictItems = reactive([])
+  DICT_SEED.forEach((g, gi) => {
+    dtSeq++
+    dictTypes.push({
+      id: 'DT' + String(dtSeq).padStart(3, '0'),
+      type: g.type, name: g.name, remark: g.remark || '',
+      sort: gi + 1, colorized: !!g.color
+    })
+    ;(g.items || []).forEach((label, ii) => {
+      diSeq++
+      dictItems.push({
+        id: 'DI' + String(diSeq).padStart(4, '0'),
+        type: g.type, code: String(label), label: String(label),
+        sort: ii + 1, status: '启用',
+        color: g.color ? (COLOR_BY_LABEL[label] || '') : ''
+      })
+    })
+  })
+  const dictTypeCrud = crud(dictTypes, 'DT', '字典类型', 'dictTypes')
+  const dictItemCrud = crud(dictItems, 'DI', '字典项', 'dictItems')
+
+  // ===== G05 定时任务调度 =====
+  // jobs：id/name/group/cron/target/params/status(运行中/已暂停/异常)/failRetry/notify/lastRun/nextRun
+  // jobLogs：jobId/start/end/result(成功/失败)/detail
+  const jobs = reactive([
+    { id: 'JOB001', name: '医疗机构数据同步', group: '数据同步', cron: '0 0 * * *', target: 'sync:medical', params: '{ "source": "卫健委" }', status: '运行中', failRetry: 3, notify: ['站内'], lastRun: '2026-08-07 00:00', nextRun: '2026-08-08 00:00' },
+    { id: 'JOB002', name: '长者食堂日服务统计', group: '报表', cron: '0 23 * * *', target: 'report:canteen-daily', params: '', status: '运行中', failRetry: 1, notify: ['站内'], lastRun: '2026-08-06 23:00', nextRun: '2026-08-07 23:00' },
+    { id: 'JOB003', name: '物联设备离线巡检', group: '巡检', cron: '0 * * * *', target: 'inspect:device-offline', params: '{ "offlineMinutes": 10 }', status: '运行中', failRetry: 2, notify: ['站内', '短信+站内'], lastRun: '2026-08-07 23:00', nextRun: '2026-08-08 00:00' },
+    { id: 'JOB004', name: '居家补贴月度核算', group: '核算', cron: '0 0 1 * *', target: 'calc:subsidy-monthly', params: '', status: '已暂停', failRetry: 0, notify: ['站内'], lastRun: '2026-08-01 00:00', nextRun: '2026-09-01 00:00' },
+    { id: 'JOB005', name: '告警日报推送', group: '推送', cron: '0 8 * * *', target: 'push:alert-daily', params: '{ "recipients": "all_admins" }', status: '运行中', failRetry: 2, notify: ['站内', '邮件'], lastRun: '2026-08-07 08:00', nextRun: '2026-08-08 08:00' },
+    { id: 'JOB006', name: '老人健康数据采集', group: '数据同步', cron: '*/15 * * * *', target: 'sync:health', params: '{ "deviceType": "健康检测" }', status: '异常', failRetry: 3, notify: ['站内', '短信+站内'], lastRun: '2026-08-07 23:15', nextRun: '2026-08-07 23:30' }
+  ])
+  let jobLogSeq = 4
+  const jobLogs = reactive([
+    { id: 'JL001', jobId: 'JOB001', start: '2026-08-07 00:00:00', end: '2026-08-07 00:00:12', result: '成功', detail: '同步医疗机构 0 条（数据源暂未接入）' },
+    { id: 'JL002', jobId: 'JOB005', start: '2026-08-07 08:00:00', end: '2026-08-07 08:00:03', result: '成功', detail: '推送日报至 2 名管理员' },
+    { id: 'JL003', jobId: 'JOB006', start: '2026-08-07 23:15:00', end: '2026-08-07 23:15:08', result: '失败', detail: '设备网关连接超时（已重试 3 次）' },
+    { id: 'JL004', jobId: 'JOB003', start: '2026-08-07 23:00:00', end: '2026-08-07 23:00:05', result: '成功', detail: '巡检设备 6 台，发现离线 1 台' }
+  ])
+  const jobCrud = crud(jobs, 'JOB', '定时任务', 'jobs')
+  const jobLogCrud = crud(jobLogs, 'JL', '任务日志', 'jobLogs')
+
+  // G05 启停任务
+  async function setJobStatus(id, status) {
+    const j = jobs.find((x) => x.id === id)
+    if (!j) return
+    const before = j.status
+    j.status = status
+    if (status === '运行中') j.nextRun = fmtDT(nextRunFromCron(j.cron, new Date()))
+    logOp(status === '运行中' ? '启用任务' : '停用任务', j.name)
+    const ok = await persistEntity('jobs', j)
+    if (!ok) j.status = before
+  }
+  // G05 手动触发：模拟执行（随机成功/失败 + 重试），写日志、更新 lastRun/nextRun
+  async function runJob(id) {
+    const j = jobs.find((x) => x.id === id)
+    if (!j) return null
+    const start = now()
+    let result = '成功', detail = '执行完成', attempts = 0
+    if (Math.random() < 0.25) { // 首次失败概率 25%
+      for (let i = 0; i < (j.failRetry || 0); i++) {
+        attempts++
+        if (Math.random() < 0.6) { result = '成功'; break }
+      }
+      detail = result === '成功'
+        ? `执行成功（第 ${attempts + 1} 次尝试）`
+        : `执行失败（重试 ${attempts} 次仍失败）${j.notify && j.notify.length ? '，已通知 ' + j.notify.join('/') : ''}`
+    }
+    const end = now()
+    const log = { id: 'JL' + (++jobLogSeq), jobId: id, start, end, result, detail }
+    jobLogs.unshift(log)
+    api.records.save('jobLogs', log).catch(() => {})
+    const before = { lastRun: j.lastRun, nextRun: j.nextRun, status: j.status }
+    j.lastRun = end
+    j.nextRun = fmtDT(nextRunFromCron(j.cron, new Date()))
+    if (result === '失败') j.status = '异常'
+    else if (j.status === '异常') j.status = '运行中'
+    logOp('触发任务', `${j.name} → ${result}`)
+    const ok = await persistEntity('jobs', j)
+    if (!ok) Object.assign(j, before)
+    return { result, detail, log }
+  }
+  // 日期格式化为 YYYY-MM-DD HH:mm
+  function fmtDT(d) {
+    if (!d) return ''
+    const p = (n) => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+  }
 
   // 初始化示例日志
   logOp('用户登录', '市民政局管理员')

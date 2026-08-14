@@ -129,6 +129,34 @@ const SEED = {
       { id: 'AR003', name: '数据同步骤降', target: '今日数据同步', op: '<', threshold: 800, unit: '次', level: '黄', channel: '站内', silence: 30, enabled: true },
       { id: 'AR004', name: '数据库负载预警', target: '数据库负载', op: '>', threshold: 75, unit: '%', level: '橙', channel: '短信+站内', silence: 15, enabled: true },
       { id: 'AR005', name: '地图渲染节点缺失', target: '地图渲染节点', op: '<', threshold: 6, unit: '个', level: '红', channel: '电话+短信', silence: 0, enabled: false }
+    ],
+    medical: [
+      { id: 'MED001', code: 'MED001', name: '旌阳区人民医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '三级甲等', address: '旌阳区泰山北路一段', type: '综合医院', status: '正常接诊' },
+      { id: 'MED002', code: 'MED002', name: '德阳市中医医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '三级乙等', address: '旌阳区天山北路', type: '中医医院', status: '正常接诊' },
+      { id: 'MED003', code: 'MED003', name: '旌阳区妇幼保健院', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '二级甲等', address: '旌阳区岷江西路', type: '妇幼保健院', status: '正常接诊' },
+      { id: 'MED004', code: 'MED004', name: '德阳华山眼科医院', srcDistrict: '旌阳区', district: '旌阳区', nature: '私立', level: '待核实', address: '旌阳区长江东路', type: '其他专科', status: '正常接诊' },
+      { id: 'MED005', code: 'MED005', name: '罗江区人民医院', srcDistrict: '罗江区', district: '罗江区', nature: '公立', level: '二级甲等', address: '罗江区万安南路', type: '综合医院', status: '正常接诊' },
+      { id: 'MED006', code: 'MED006', name: '罗江区万安镇卫生院', srcDistrict: '罗江区', district: '罗江区', nature: '公立', level: '未定级（基层）', address: '罗江区万安镇', type: '乡镇卫生院', status: '正常接诊' },
+      { id: 'MED007', code: 'MED007', name: '罗江博爱康复医院', srcDistrict: '罗江区', district: '罗江区', nature: '私立', level: '待核实', address: '罗江区纹江路', type: '护理机构', status: '正常接诊' },
+      { id: 'MED008', code: 'MED008', name: '中江县人民医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '三级甲等', address: '中江县凯江镇大北街', type: '综合医院', status: '正常接诊' },
+      { id: 'MED009', code: 'MED009', name: '中江县中医医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '三级乙等', address: '中江县一环路北段', type: '中医医院', status: '正常接诊' },
+      { id: 'MED010', code: 'MED010', name: '中江县妇幼保健院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '二级甲等', address: '中江县城区一环路东段', type: '妇幼保健院', status: '正常接诊' },
+      { id: 'MED011', code: 'MED011', name: '中江县精神病医院', srcDistrict: '中江县', district: '中江县', nature: '公立', level: '二级乙等', address: '中江县南华镇', type: '精神专科', status: '正常接诊' },
+      { id: 'MED012', code: 'MED012', name: '中江民瑞医院', srcDistrict: '中江县', district: '中江县', nature: '私立', level: '待核实', address: '中江县凯江镇', type: '综合医院', status: '正常接诊' },
+      { id: 'MED013', code: 'MED013', name: '广汉市人民医院', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '三级乙等', address: '广汉市汉口路', type: '综合医院', status: '正常接诊' },
+      { id: 'MED014', code: 'MED014', name: '广汉市妇幼保健院', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '二级甲等', address: '广汉市佛山路西段', type: '妇幼保健院', status: '正常接诊' },
+      { id: 'MED015', code: 'MED015', name: '广汉市雒城街道社区卫生服务中心', srcDistrict: '广汉市', district: '广汉市', nature: '公立', level: '未定级（基层）', address: '广汉市雒城街道', type: '乡镇卫生院', status: '正常接诊' },
+      { id: 'MED016', code: 'MED016', name: '广汉骨科医院', srcDistrict: '广汉市', district: '广汉市', nature: '私立', level: '二级乙等', address: '广汉市西安路', type: '其他专科', status: '正常接诊' },
+      { id: 'MED017', code: 'MED017', name: '什邡市人民医院', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '二级甲等', address: '什邡市方亭镇', type: '综合医院', status: '正常接诊' },
+      { id: 'MED018', code: 'MED018', name: '什邡市妇幼保健院', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '二级乙等', address: '什邡市金河南路', type: '妇幼保健院', status: '正常接诊' },
+      { id: 'MED019', code: 'MED019', name: '什邡市方亭社区卫生服务中心', srcDistrict: '什邡市', district: '什邡市', nature: '公立', level: '未定级（基层）', address: '什邡市方亭街道', type: '乡镇卫生院', status: '正常接诊' },
+      { id: 'MED020', code: 'MED020', name: '什邡爱尔眼科医院', srcDistrict: '什邡市', district: '什邡市', nature: '私立', level: '待核实', address: '什邡市蓥峰北路', type: '其他专科', status: '正常接诊' },
+      { id: 'MED021', code: 'MED021', name: '绵竹市人民医院', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '三级乙等', address: '绵竹市剑南镇', type: '综合医院', status: '正常接诊' },
+      { id: 'MED022', code: 'MED022', name: '绵竹市妇幼保健院', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '二级甲等', address: '绵竹市紫岩街道', type: '妇幼保健院', status: '正常接诊' },
+      { id: 'MED023', code: 'MED023', name: '绵竹市紫岩社区卫生服务中心', srcDistrict: '绵竹市', district: '绵竹市', nature: '公立', level: '未定级（基层）', address: '绵竹市紫岩街道', type: '乡镇卫生院', status: '正常接诊' },
+      { id: 'MED024', code: 'MED024', name: '绵竹聚康医养护理院', srcDistrict: '绵竹市', district: '绵竹市', nature: '私立', level: '待核实', address: '绵竹市东北镇', type: '护理机构', status: '正常接诊' },
+      { id: 'MED025', code: 'MED025', name: '德阳市卫健委', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '—', address: '旌阳区长江东路', type: '卫生健康行政', status: '正常接诊' },
+      { id: 'MED026', code: 'MED026', name: '德阳市疾病预防控制中心', srcDistrict: '旌阳区', district: '旌阳区', nature: '公立', level: '—', address: '旌阳区峨眉南路', type: '疾病预防控制', status: '正常接诊' }
     ]
   }
 }
